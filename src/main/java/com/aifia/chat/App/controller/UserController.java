@@ -15,7 +15,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = "/save")
     public ResponseEntity<User> SaveUser(@RequestBody User user){
         return ResponseEntity.ok(userService.SaveUser(user));
     }
@@ -31,12 +31,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/connectedUsers")
-    public ResponseEntity<List<User>> getConnectedUser(){
-        return ResponseEntity.ok(userService.getConnectedUser());
+    public ResponseEntity<List<User>> getConnectedUsers(){
+        return ResponseEntity.ok(userService.getConnectedUsers());
     }
 
-    @PutMapping(value = "/updateStatus/{id}/{status}")
-    public void updateStatus(@PathVariable String id, @PathVariable Boolean status){
-        userService.updateUserStatus(id, status);
-    }
 }

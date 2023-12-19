@@ -19,7 +19,8 @@ public class Messages {
     private String chatId;
     private String senderId;
     private String recipientId;
-    private String conversationId;
     private String content;
     private LocalDateTime timestamp;
+    private boolean read;
+    private LocalDateTime readTime;
 }

@@ -8,21 +8,27 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User SaveUser(User user){
         if (userAlreadyExists(user.getEmail())){
             throw new RuntimeException("user already exists");
         }
-        //setup password and code
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setOnlineStatus(true);
         return this.userRepository.save(user);
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findUserByEmail(email).orElseThrow(()-> new RuntimeException("No user with this email"+ email));
     }
 
 
@@ -33,12 +39,13 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public void updateUserStatus(String id, Boolean status){
+    public User disconnect(String id){
      var storedSUser = userRepository.findById(id).orElse(null);
      if (storedSUser != null){
-         storedSUser.setOnlineStatus(status);
+         storedSUser.setOnlineStatus(false);
          userRepository.save(storedSUser);
      }
+     return storedSUser;
     }
 
     public User updateProfile(String id, User user){
@@ -53,7 +60,7 @@ public class UserService {
         }
         return storedUser;
     }
-    public List<User> getConnectedUser(){
+    public List<User> getConnectedUsers(){
         return new ArrayList<>(userRepository.findAllByOnlineStatus(true));
     }
 
