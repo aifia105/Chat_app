@@ -1,25 +1,20 @@
 package com.aifia.chat.App.model;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 
-@Document
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@Document
 @Builder
-public class Groups {
+public class GroupConversation {
 
     @Id
     private String id;
     private String groupId;
     private String[] participants;
-    @NotBlank(message = "group name cannot be empty")
-    private String groupName;
-    private LocalDateTime createdAt;
 }
