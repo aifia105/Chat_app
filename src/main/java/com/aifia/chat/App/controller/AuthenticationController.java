@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
+
 @Controller
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -19,7 +21,13 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody User user){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody User user) throws IOException {
+        if (user != null){
+            byte[] bytes = user.getPicture();
+            user.setPicture(bytes);
+        } else {
+            throw new IOException("UserDto  null");
+        }
         return ResponseEntity.ok(authenticationService.register(user));
     }
 

@@ -30,6 +30,7 @@ public class User implements UserDetails {
     @NotBlank(message = "email cannot be empty")
     @Email(message = "Invalid email address")
     private String email;
+    private byte[] picture;
     @NotBlank(message = "password cannot be empty")
     @Size(min = 6, max = 40, message = "Password must be between 6 and 40 characters")
     private String password;

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -16,7 +17,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(value = "/save")
-    public ResponseEntity<User> SaveUser(@RequestBody User user){
+    public ResponseEntity<User> SaveUser(@RequestBody User user) throws IOException {
+        if (user != null){
+            byte[] bytes = user.getPicture();
+            user.setPicture(bytes);
+        } else {
+            throw new IOException("UserDto  null");
+        }
         return ResponseEntity.ok(userService.SaveUser(user));
     }
 
