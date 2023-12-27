@@ -12,6 +12,7 @@ public class AuthenticationResponse {
 
     private String id;
     private String username;
+    private byte[] picture;
     private String email;
     private String password;
     private boolean onlineStatus;
