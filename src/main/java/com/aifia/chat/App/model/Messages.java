@@ -1,5 +1,6 @@
 package com.aifia.chat.App.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,9 +17,10 @@ public class Messages {
 
     @Id
     private String id;
-    private String chatId;
+    @NotBlank
+    private String ConversationId;
+    @NotBlank
     private String senderId;
-    private String recipientId;
     private String content;
     private LocalDateTime timestamp;
     private boolean read;

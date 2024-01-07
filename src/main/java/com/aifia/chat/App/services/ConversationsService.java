@@ -4,8 +4,11 @@ package com.aifia.chat.App.services;
 import com.aifia.chat.App.model.Conversations;
 import com.aifia.chat.App.repository.ConversationsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -15,38 +18,43 @@ public class ConversationsService {
     private final ConversationsRepository conversationsRepository;
 
 
-    public Optional<String> getChatRoomId(
-            String senderId,
-            String recipientId,
-            boolean createNewRoomIfNotExists
-    ){
-        return conversationsRepository.findBySenderIdAndRecipientId(senderId, recipientId)
-                .map(Conversations::getChatId)
-                .or(()->{
-                    if (createNewRoomIfNotExists){
-                        var chatId = createChatId(senderId, recipientId);
-                        return Optional.of(chatId);
-                    }
-                    return Optional.empty();
-                });
+    public Conversations conversationOneOnOne(String id) {
+        String senderId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<String> participants = List.of(id,senderId);
+        Optional<Conversations> conversationsOptional = conversationsRepository.findByParticipantsContains(participants);
+        if (conversationsOptional.isEmpty()){
+            Conversations newConversation = new Conversations();
+            newConversation.setType("one-on-one");
+            newConversation.setParticipants(participants);
+            conversationsRepository.save(newConversation);
+            return newConversation;
+        } else {
+            return conversationsOptional.get();
+        }
+    }
+
+    public Conversations conversationsGroup(List<String> participants){
+        Conversations newConversation = new Conversations();
+        newConversation.setType("group");
+        newConversation.setParticipants(participants);
+        conversationsRepository.save(newConversation);
+        return newConversation;
+    }
+
+    public List<Conversations> getUserConversations(String id){
+        if (id == null){
+            throw new RuntimeException("user id is null");
+        }
+        return conversationsRepository.findByParticipantsIsContaining(id);
     }
 
 
 
-    private String createChatId(String senderId,String recipientId){
-        var chatId = String.format("%s_%s", senderId, recipientId);
-        Conversations senderConversations = Conversations.builder()
-                .chatId(chatId)
-                .senderId(senderId)
-                .recipientId(recipientId)
-                .build();
-        Conversations recipientConversations = Conversations.builder()
-                .chatId(chatId)
-                .senderId(recipientId)
-                .recipientId(senderId)
-                .build();
-        conversationsRepository.save(senderConversations);
-        conversationsRepository.save(recipientConversations);
-        return chatId;
-    }
+
+
+
+
+
+
+
 }
