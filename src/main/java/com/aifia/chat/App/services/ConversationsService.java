@@ -2,6 +2,7 @@ package com.aifia.chat.App.services;
 
 
 import com.aifia.chat.App.model.Conversations;
+import com.aifia.chat.App.model.User;
 import com.aifia.chat.App.repository.ConversationsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,8 @@ public class ConversationsService {
 
 
     public Conversations conversationOneOnOne(String id) {
-        String senderId = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String senderId =  user.getId();
         List<String> participants = List.of(id,senderId);
         Optional<Conversations> conversationsOptional = conversationsRepository.findByParticipantsContains(participants);
         if (conversationsOptional.isEmpty()){
