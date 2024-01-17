@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ConversationsRepository extends MongoRepository<Conversations, String> {
 
 
-    Optional<Conversations> findByParticipantsContains(@NotBlank List<String> participants);
+    Optional<Conversations> findByParticipantsAndType(@NotBlank List<String> participants, String type);
 
     List<Conversations> findByParticipantsIsContaining(String userId);
 

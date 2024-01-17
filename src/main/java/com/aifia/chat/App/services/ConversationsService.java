@@ -23,7 +23,7 @@ public class ConversationsService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String senderId =  user.getId();
         List<String> participants = List.of(id,senderId);
-        Optional<Conversations> conversationsOptional = conversationsRepository.findByParticipantsContains(participants);
+        Optional<Conversations> conversationsOptional = conversationsRepository.findByParticipantsAndType(participants, "one-on-one");
         if (conversationsOptional.isEmpty()){
             Conversations newConversation = new Conversations();
             newConversation.setType("one-on-one");
